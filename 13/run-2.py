@@ -16,45 +16,19 @@ class Arcade():
         self.paddle = 0
         self.score = 0
 
-    def step(self):
-        # print(self.com.inputs)
-        # print(self.com.need_input)
-        while (len(self.com.inputs) > 0) and not self.com.halted:
-            # print(self.com.halted)
-            # print(self.com.inputs)
-            pass
-        while (not self.com.need_input) and not self.com.halted:
-            # print(self.com.halted)
-            # print(self.com.need_input)
-            # print(self.com.outputs)
-            pass
-        self.load_output()
-        # print(self.com.inputs)
-        # print(self.com.need_input)
-
     def load_output(self):
-        while len(self.com.outputs) % 3 != 0:
-            pass
         data = [tuple(self.com.outputs[i:i+3])
                 for i in range(0, len(self.com.outputs), 3)]
         for x, y, v in data:
-            # print((x, y), v)
             self.map[(x, y)] = v
-            if v == 4:
-                self.ball = x
-            elif v == 3:
-                self.paddle = x
-            if (x, y) == (-1, 0):
-                self.score = v
+            self.ball = x if v == 4 else self.ball
+            self.paddle = x if v == 3 else self.paddle
+            self.score = v if (x, y) == (-1, 0) else self.score
         self.com.outputs = []
 
     def draw(self):
         for (x, y), v in self.map.items():
-            if (x, y) == (-1, 0):
-                # self.score = v
-                # print(self.score)
-                pass
-            else:
+            if (x, y) != (-1, 0):
                 self.im.putpixel((x, y), ImageColor.getrgb(self.get_color(v)))
         self.im.save('map.png')
 
@@ -94,17 +68,15 @@ class Arcade():
             self.com.input(1)
 
     def run(self):
-        thread = threading.Thread(target=self.com.execute)
-        thread.start()
-        time.sleep(2)
-        self.load_output()
         while not self.com.halted:
-            # print('start game')
-            self.move()
-            # time.sleep(0.1)
-            # self.load_output()
-            self.step()
-            self.draw()
+            self.com.execute()
+            if self.com.need_input:
+                self.move()
+            else:
+                self.com.execute()
+                self.com.execute()
+                self.load_output()
+            # self.draw()
 
 
 program[0] = 2

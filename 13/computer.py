@@ -14,17 +14,20 @@ class Computer():
         self.need_input = False
 
     def execute(self):
-        print("start execution")
+        # print("start execution")
+        stop = False
+        self.need_input = False
         while not self.halted:
-            self.run()
+            stop = self.run()
             self.next()
-        return 0
+            if stop:
+                break
+        return
 
     def run(self):
         self.mode, opcode = self.get_inst()
         if opcode == 99:
             self.halted = True
-            return
         elif opcode == 1:  # plus
             self.setValue(self.writePos(3),
                           self.get_para(1) + self.get_para(2))
@@ -34,15 +37,15 @@ class Computer():
                           self.get_para(1) * self.get_para(2))
             self.inc = 4
         elif opcode == 3:  # input
-            while not len(self.inputs):
+            if len(self.inputs) == 0:
                 self.need_input = True
-                None
-            self.need_input = False
+                return True
             self.setValue(self.writePos(1), self.inputs.pop(0))
             self.inc = 2
         elif opcode == 4:  # output
             self.output(self.get_para(1))
             self.inc = 2
+            return True
         elif opcode == 5:  # jump-if-true
             if(self.get_para(1) != 0):
                 self.pc = self.get_para(2)
