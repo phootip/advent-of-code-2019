@@ -17,17 +17,17 @@ class Computer():
         # print("start execution")
         stop = False
         self.need_input = False
-        while not self.halted:
+        while not self.halted and not stop:
             stop = self.run()
             self.next()
-            if stop:
-                break
         return
 
     def run(self):
         self.mode, opcode = self.get_inst()
         if opcode == 99:
             self.halted = True
+            self.inc = 0
+            print('Com end')
         elif opcode == 1:  # plus
             self.setValue(self.writePos(3),
                           self.get_para(1) + self.get_para(2))
@@ -39,6 +39,8 @@ class Computer():
         elif opcode == 3:  # input
             if len(self.inputs) == 0:
                 self.need_input = True
+                self.inc = 0
+                print('need input!!')
                 return True
             self.setValue(self.writePos(1), self.inputs.pop(0))
             self.inc = 2
