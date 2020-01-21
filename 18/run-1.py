@@ -61,24 +61,26 @@ def get_keys_cost(graph, pos):
         # print('small help')
         return mem[pos]
     queue = [(pos, 0, [])]
-    visited = []
+    visited = [pos]
     keys = []
 
     while queue:
         node, cost, doors = queue.pop(0)
-        visited.append(node)
+        # visited.append(node)
         adj = graph[node]['adj']
+        if graph[node]['value'].isupper():
+            doors.append(graph[node]['value'])
+        if graph[node]['value'].islower():
+            key = {'pos': node, 'cost': cost, 'doors': doors}
+            keys.append(key)
         for new_node in adj:
             if not new_node in visited:
+                visited.append(new_node)
                 new_cost = cost + 1
                 new_doors = doors[:]
-                if graph[new_node]['value'].isupper():
-                    new_doors.append(graph[new_node]['value'])
-                if graph[new_node]['value'].islower():
-                    key = {'pos': new_node, 'cost': new_cost, 'doors': new_doors}
-                    keys.append(key)
                 queue.append((new_node, new_cost, new_doors))
     mem[pos] = keys
+    # print_keys(graph, keys)
     return keys
 
 
@@ -90,6 +92,12 @@ def get_keys_cost(graph, pos):
 #             graph[k]['value'] = '.'
 #     graph[pos]['value'] = '.'
 #     return pos, cost
+
+def print_keys(graph, keys):
+    result = []
+    for key in keys:
+        result.append(graph[key['pos']]['value'])
+    print(result)
 
 def count_keys(graph):
     c = 0
@@ -104,12 +112,9 @@ def part1(graph,pos,opened_doors):
         return mem[(pos,tuple(opened_doors))]
     ans = float('inf')
     keys = get_keys_cost(graph, pos)
-    print(keys)
-    print(f'len(keys): {len(keys)}')
-    d = 0
-    if graph[pos]['value'].islower():
-        d = 1
-    if len(keys) + d > len(opened_doors):
+    # print(keys)
+    # print(f'len(keys): {len(keys)}')
+    if len(keys) > len(opened_doors):
         for key in keys:
             if set(key['doors']) <= opened_doors and graph[key['pos']]['value'].upper() not in opened_doors:
                 # print(graph[key['pos']]['value'])
@@ -117,7 +122,7 @@ def part1(graph,pos,opened_doors):
                 new_opened = opened_doors.copy()
                 new_opened.add(graph[key['pos']]['value'].upper())
                 # print(new_opened)
-                print(key['cost'])
+                # print(key['cost'])
                 ans = min(ans,part1(graph,new_pos,new_opened) + key['cost'])
             # if not d:
             #     print(ans)
