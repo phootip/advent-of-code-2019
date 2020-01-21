@@ -1,2 +1,4 @@
 .vscode/settings.json
 *.png
+*/*.png
+18/map.png
