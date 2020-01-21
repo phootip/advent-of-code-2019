@@ -56,32 +56,40 @@ def draw2(graph, pos):
     im.save('map.png')
 
 
-def reachable_keys(graph, pos):
-    queue = [(pos, 0)]
+def get_keys_cost(graph, pos):
+    if pos in mem:
+        # print('small help')
+        return mem[pos]
+    queue = [(pos, 0, [])]
     visited = []
     keys = []
 
     while queue:
-        node, cost = queue.pop(0)
+        node, cost, doors = queue.pop(0)
         visited.append(node)
         adj = graph[node]['adj']
         for new_node in adj:
-            if not new_node in visited and not graph[new_node]['value'].isupper():
+            if not new_node in visited:
                 new_cost = cost + 1
-                queue.append((new_node, new_cost))
+                new_doors = doors[:]
+                if graph[new_node]['value'].isupper():
+                    new_doors.append(graph[new_node]['value'])
                 if graph[new_node]['value'].islower():
-                    keys.append((new_node, new_cost))
+                    key = {'pos': new_node, 'cost': new_cost, 'doors': new_doors}
+                    keys.append(key)
+                queue.append((new_node, new_cost, new_doors))
+    mem[pos] = keys
     return keys
 
 
-def grab_key(graph, pos, key):
-    pos, cost = key
-    door = graph[pos]['value'].upper()
-    for k in graph:
-        if graph[k]['value'] == door:
-            graph[k]['value'] = '.'
-    graph[pos]['value'] = '.'
-    return pos, cost
+# def grab_key(graph, pos, key):
+#     pos, cost = key
+#     door = graph[pos]['value'].upper()
+#     for k in graph:
+#         if graph[k]['value'] == door:
+#             graph[k]['value'] = '.'
+#     graph[pos]['value'] = '.'
+#     return pos, cost
 
 def count_keys(graph):
     c = 0
@@ -90,33 +98,37 @@ def count_keys(graph):
             c += 1
     return c
 
-def part1(graph,pos):
-    # if mem.get((graph,pos)):
-    #     return mem[(graph,pos)]
-        
+def part1(graph,pos,opened_doors):
+    if (pos,tuple(opened_doors)) in mem:
+        # print('big help')
+        return mem[(pos,tuple(opened_doors))]
     ans = float('inf')
-    if any(v['value'].islower() for (x, y), v in graph.items()):
-        # sleep(0.5)
-        keys = reachable_keys(graph, pos)
-        if mem.get((tuple(keys),pos)):
-            # print('this help')
-            return mem[(tuple(keys),pos)]
+    keys = get_keys_cost(graph, pos)
+    print(keys)
+    print(f'len(keys): {len(keys)}')
+    d = 0
+    if graph[pos]['value'].islower():
+        d = 1
+    if len(keys) + d > len(opened_doors):
         for key in keys:
-            if pos == (40,40):
-                print(len(keys))
-                print(f'cal key: {key}')
-            new_graph = deepcopy(graph)
-            new_pos, cost = grab_key(new_graph, pos, key)
-            ans = min(ans,part1(new_graph,new_pos) + cost)
-            # print(ans)
-        mem[(tuple(keys),pos)] = ans
+            if set(key['doors']) <= opened_doors and graph[key['pos']]['value'].upper() not in opened_doors:
+                # print(graph[key['pos']]['value'])
+                new_pos = key['pos']
+                new_opened = opened_doors.copy()
+                new_opened.add(graph[key['pos']]['value'].upper())
+                # print(new_opened)
+                print(key['cost'])
+                ans = min(ans,part1(graph,new_pos,new_opened) + key['cost'])
+            # if not d:
+            #     print(ans)
+        mem[(pos,tuple(opened_doors))] = ans
         return ans
         # ending
     # draw(graph, pos)
     # draw2(graph, pos)
     # print(ans)
     else:
-        # mem[(deepcopy(graph),pos)] = 0
+        mem[(pos,tuple(opened_doors))] = 0
         return 0
 
 
@@ -126,19 +138,20 @@ def run(data):
     # print(height,width)
     graph, pos = save_graph(data)
     draw2(graph, pos)
-    print(pos)
-    ans = part1(graph,pos)
+    opened_doors = set()
+    print(f'all_keys: {count_keys(graph)}')
+    ans = part1(graph,pos,opened_doors)
     print(ans)
 
 
 for i in range(1, 6):
     # if i == 4:
     #     continue
-    f = open(f'example{i}.txt')
-    # f = open(f'input.txt')
+    # f = open(f'example{i}.txt')
+    f = open(f'input.txt')
     start = time()
     mem = {}
     data = list(map(lambda x: x.strip(), f.readlines()))
     run(data)
     print(f'time used: {time() - start}')
-    # break
+    break
