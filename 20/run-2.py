@@ -44,7 +44,7 @@ def connect_portals(graph, width, height, inner_left, inner_right):
             outter.remove(start)
         elif portal == 'ZZ':
             dest = points[0]
-            outter.remove(dest)
+            # outter.remove(dest)
         else:
             graph[points[0]]['adj'].append(points[1])
             graph[points[1]]['adj'].append(points[0])
@@ -102,22 +102,21 @@ def is_deadends(graph,inner,outter, node, new_node):
         return mem[(node,new_node)]
     queue = [new_node]
     visited = [node,new_node]
-
     while queue:
         node = queue.pop(0)
         adj = graph[node]['adj']
+        if node in inner or node in outter:
+            mem[start] = False
+            return False
         for new_node in adj:
-            if new_node in inner or new_node in outter:
-                mem[start] = False
-                return False
-            visited.append(new_node)
-            queue.append(new_node)
+            if new_node not in visited:
+                visited.append(new_node)
+                queue.append(new_node)
     mem[start] = True
     return True
 
 def shortest_path(graph,start,dest,inner,outter):
     queue = [(start,[(start,0)],0)]
-    # visited = [start]
 
     while queue:
         node,route,level = queue.pop(0)
@@ -131,8 +130,8 @@ def shortest_path(graph,start,dest,inner,outter):
             return len(route) - 1
         adj = graph[node]['adj']
         for new_node in adj:
-            # if len(adj) > 1 and is_deadends(graph,inner,outter,node,new_node):
-            #     continue
+            if len(adj) > 2 and is_deadends(graph,inner,outter,node,new_node):
+                continue
             new_level = level
             if node in inner and new_node in outter:
                 new_level += 1
@@ -156,13 +155,15 @@ def part2(data):
     start,dest,inner,outter = connect_portals(graph,width,height, inner_left, inner_right)
     graph = {k:v for k,v in graph.items() if v['value'] == '.'}
     connect(graph)
+    # print(graph[(17,34)])
+    # print(is_deadends(graph,inner,outter,(7,5),(7,4)))
     ans = shortest_path(graph,start,dest,inner,outter)
     print(f'ans: {ans}')
     draw(graph,start)
 
 for i in range(3, 4, 2):
-    f = open(f'example{i}.txt')
-    # f = open(f'input.txt')
+    # f = open(f'example{i}.txt')
+    f = open(f'input.txt')
     start = time()
     mem = {}
     data = list(map(lambda x: x[:-1], f.readlines()))
