@@ -152,9 +152,6 @@ def run(data):
 
 
 for i in range(1, 6):
-    # if i == 4:
-    #     continue
-    # f = open(f'example{i}.txt')
     f = open(f'input.txt')
     start = time()
     mem = {}
