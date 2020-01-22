@@ -2,7 +2,7 @@ from time import time
 from PIL import Image, ImageColor
 from collections import defaultdict
 
-im = Image.new('RGB', (100, 100))
+im = Image.new('RGB', (200, 200))
 
 def save_graph(data, width, height):
     x = y = 0
@@ -115,9 +115,9 @@ def part1(data):
     connect(graph)
     ans = shortest_path(graph,start,dest)
     print(ans)
-    # draw(graph,pos)
+    draw(graph,start)
 
-for i in range(1, 3):
+for i in range(2, 3):
     # f = open(f'example{i}.txt')
     f = open(f'input.txt')
     start = time()
@@ -125,4 +125,4 @@ for i in range(1, 3):
     data = list(map(lambda x: x[:-1], f.readlines()))
     part1(data)
     print(f'time used: {time() - start}')
-    break
+    # break
