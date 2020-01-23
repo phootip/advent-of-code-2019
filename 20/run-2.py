@@ -117,10 +117,12 @@ def is_deadends(graph,inner,outter, node, new_node):
 
 def shortest_path(graph,start,dest,inner,outter):
     queue = [(start,[(start,0)],0)]
+    deepest = len(inner)
 
     while queue:
         node,route,level = queue.pop(0)
-        if level < 0:
+        if level < 0 or level > deepest:
+        # if level < 0:
             continue
         if node == dest and level == 0:
             # compress = [r[0] for r in route]
