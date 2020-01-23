@@ -26,11 +26,6 @@ class Robot():
 
     def think(self):
         print('thinking...')
-        # main = a = b = c = ''
-        # print(len(main))
-        # if any(map(lambda x: len(x) > 20, [main,a,b,c])):
-        #     print('there is more than 20')
-        #     return False
         unvisited = list(self.graph.keys())
         route = []
         direc = (0,-1)
@@ -59,24 +54,10 @@ class Robot():
                         break
             else:
                 print('this is intersection')
-                # for dest in adjacent:
-                #     if dest in unvisited:
-                #         new_direc, new_route = self.move(pos,dest,direc,route)
-                #         if not new_direc:
-                #             continue
-                #         new_unvisited = unvisited[:]
-                #         new_pos = dest[:]
-                #         result = self.get_routes(new_unvisited, new_pos, new_direc, new_route, pos)
-                #         if result:
-                #             routes += result
                 dest = (pos[0] + direc[0],pos[1] + direc[1])
                 direc, route = self.move(pos,dest,direc,route)
                 last_pos = pos
                 pos = dest
-                # print(f'intersection {pos} done')
-                # if not routes:
-                #     return None
-            # print(len(unvisited))
         routes.append(route)
         print(len(routes))
         return routes
