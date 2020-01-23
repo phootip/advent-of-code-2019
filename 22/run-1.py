@@ -9,7 +9,6 @@ def gen_deck(size):
 
 def deal_n(deck,n):
     deck_size = len(deck)
-    print(deck_size)
     new_deck = [0 for i in range(deck_size)]
     pos = n
     for i in range(deck_size):
@@ -29,9 +28,7 @@ def part1(deck,inst):
         elif order[0] == 'cut':
             n = int(order[-1])
             deck = deck[n:] + deck[:n]
-        # print(deck)
-        # break
-    # return deck[2020]
+        print(deck)
     return deck
     
 start = time()
@@ -40,17 +37,18 @@ start = time()
 # f = open('example2.txt')
 # f = open('example3.txt')
 for i in range(1,5):
-    # f = open(f'example{i}.txt')
-    f = open('input.txt')
+    f = open(f'example{i}.txt')
+    # f = open('input.txt')
     data = f.readlines()
     inst = tokenize(data)
-    # deck_size = 10
-    deck_size = 10007
+    deck_size = 10
+    # deck_size = 10007
     deck = [i for i in range(deck_size)]
+    print(deck)
     ans = part1(deck,inst)
-    print(ans.index(2019)) 
+    # print(ans.index(2019)) 
     # print(ans[2019]) 
     print(f'time used: {time() - start}')
-    print('5502 is too high')
-    print('1713 is too low')
-    break
+    # print('5502 is too high')
+    # print('1713 is too low')
+    # break
