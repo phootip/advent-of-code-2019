@@ -46,15 +46,26 @@ def part2(pos, deck_size,inst):
     # for i in range(101741582076661):
     #     print(i)
     #     deck = shuffle(deck,inst)
-    start = pos
-    print(f'pos, deck_size: {pos}, {deck_size}')
-    loop = len(inst) - 1
-    new_pos = shuffle(pos,deck_size,inst,loop)
-    print(new_pos)
-    # mem[pos] = new_pos
-    # if new_pos == start:
-    #     print(len(mem))
-    #     break
+    c = 0
+    while True:
+        start = pos
+        # print(f'pos, deck_size: {pos}, {deck_size}')
+        # if mem.get(pos):
+        #     print(pos)
+        #     break
+        loop = len(inst) - 1
+        new_pos = shuffle(pos,deck_size,inst,loop)
+        c += 1
+        # print(new_pos)
+        # mem[pos] = new_pos
+        pos = new_pos
+        # print(101741582076661 - c)
+        if new_pos < 1000000:
+            print(new_pos)
+        if new_pos == start:
+            # print(len(mem))
+            print(c)
+            break
     # loop = 0
     # result = []
     # for i in range(10):
