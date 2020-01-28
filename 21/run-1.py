@@ -45,7 +45,3 @@ class Robot():
         command += self.str_to_ascii('WALK')
         return command
 
-f = open('input.txt')
-program = list(map(int, f.readline().strip().split(',')))
-robot = Robot(program)
-robot.run()
