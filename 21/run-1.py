@@ -10,9 +10,6 @@ class Robot():
             c = self.com.get_output()
             if c > 1000:
                 print(c)
-            # if c == 35 or c == 94:  # 35 means '#', 46 means '.', 10 means 'new_line'
-            #     self.graph[(self.c_x, self.c_y)] = [-1,-1,-1,-1] # N, S, W, E
-
             self.buffer += chr(c)
         if self.buffer[-2:] == '\n\n':
             print(self.buffer)
